@@ -193,9 +193,41 @@ powershell Get-ForestDomain
 ```
 Ver la política de contraseñas del dominio
 ```
-Get-DomainPolicyData
+powershell Get-DomainPolicyData
 ```
-Ver los grupos a los que pertenece un usuario
+Ver los grupos a los que pertenece un usuario (Get-DomainUser para ver todos los usuarios)
 ```
 powershell Get-DomainUser -Identity jking -Properties DisplayName, MemberOf | fl
+```
+Ver todos los ordenadores del dominio
+```
+powershell Get-DomainComputer -Properties DnsHostName | sort -Property DnsHostName
+```
+Ver todas las OU del dominio
+```
+powershell Get-DomainOU -Properties Name | sort -Property Name
+```
+Ver todos los grupos del dominio que tengan la palabra "admin"
+```
+powershell Get-DomainGroup | where Name -like "*Admins*" | select SamAccountName
+```
+Ver los miembros de un grupo concreto
+```
+powershell Get-DomainGroupMember -Identity "Domain Admins" | select MemberDistinguishedName
+```
+Mirar todas las GPOs del dominio
+```
+powershell Get-DomainGPO -Properties DisplayName | sort -Property DisplayName
+```
+Mirar las GPOs locales
+```
+powershell Get-DomainGPOLocalGroup | select GPODisplayName, GroupName
+```
+Ver las maquinas donde un grupo del dominio es miembro de un grupo local (util para ver local admins)
+```
+powershell Get-DomainGPOUserLocalGroupMapping -LocalGroup Administrators | select ObjectName, GPODisplayName, ContainerName, ComputerName | fl
+```
+Ver la confianza del dominio actual con el resto
+```
+powershell Get-DomainTrust
 ```
