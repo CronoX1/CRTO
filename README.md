@@ -474,5 +474,24 @@ powershell Get-SQLConnectionTest -Instance "instancia,1433" | fl
 ```
 Información del MSSQL (/m:whoami para ver los roles que tiene nuestro usuario)
 ```
-execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /auth:wintoken /host:HOST /module:info
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /auth:wintoken /host:HOST /module:info
+```
+Ver los roles de otro usuario
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:windomain /d:dev.cyberbotic.io /u:mssql_svc /p:Cyberb0tic /h:sql-2.dev.cyberbotic.io,1433 /m:whoami
+```
+Ver los usuarios que son Admins de MSSQL
+```
+powershell Get-DomainGroup -Identity *SQL* | % { Get-DomainGroupMember -Identity $_.distinguishedname | select groupname, membername }
+```
+Mirar el nombre del servidor
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:query /c:"select @@servername"
+```
+```
+powershell Get-SQLQuery -Instance "sql-2.dev.cyberbotic.io,1433" -Query "select @@servername"
+```
+Acceder desde una maquina Linux con mssqlclient.py
+```
+proxychains mssqlclient.py -windows-auth DEV/bfarmer@10.10.122.25
 ```
