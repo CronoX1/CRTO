@@ -321,7 +321,7 @@ jump [psexec,winrm...] equipo [listener]
 ```
 Remote-exec
 ```
-remote-exec [psexec, winrm...] comando
+remote-exec [psexec, winrm...] [listener (SMB mejor)]
 ```
 ## WMI
 Subir un payload a la maquina
