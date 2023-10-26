@@ -1,5 +1,5 @@
 # CRTO
-Mi own notes to pass the CRTO
+My own notes to pass the CRTO
 
 # Initial Compromise
 
